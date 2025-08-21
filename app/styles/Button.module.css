@@ -1,0 +1,16 @@
+.button {
+    font-family: var(--font-inter);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #e6c894;
+    color: #1a1612;
+    border: none;
+    border-radius: 999px;
+    padding: 6px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.2s;
+}
