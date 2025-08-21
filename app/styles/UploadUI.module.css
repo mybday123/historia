@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin: 0px;
+    border-style: dashed;
+    border-color: #e6c89480;
+    border-radius: 11px;
+    padding: 43px 175px;
+    width: fit-content;
+}
+
+.p {
+    margin: 0px;
+}
+
+.pSmall {
+    margin: 0px;
+    font-size: 12px;
+}
