@@ -31,7 +31,7 @@ function UploadUI() {
         style={{ display: "none" }}
       />
       <p className={styles.p}>or drop an image here</p>
-      <p className={styles.pSmall}>PNG,JPG,JPEG</p>
+      <p className={styles.pSmall}>PNG, JPG, JPEG</p>
       <p className={styles.pSmall}>Max size: 15MB</p>
     </div>
   );
