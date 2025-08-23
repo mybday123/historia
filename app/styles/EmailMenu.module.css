@@ -1,0 +1,33 @@
+.emailMenuContainer {
+    position: absolute;
+    top: 56px;
+    right: 320px;
+    background: #23201c;
+    border: 1px solid #d6c7b7;
+    border-radius: 8px;
+    padding: 16px;
+    z-index: 2000;
+    min-width: 240px;
+    display: flex;
+    gap: 12px;
+}
+
+.emailInput {
+    width: stretch;
+    padding: 8px;
+    border-radius: 999px;
+    border: 1px solid #d6c7b7;
+    background: #1a1612;
+    color: #d6c7b7;
+}
+
+.emailInput:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #e6c894;
+}
+
+.errorText {
+    color: #e57373;
+    margin-bottom: 8px;
+}
