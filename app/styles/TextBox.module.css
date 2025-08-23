@@ -1,5 +1,6 @@
 .textboxcontainer {
     display: flex;
+    justify-content: center;
     gap: 10px;
     width: stretch;
     max-width: 800px;
