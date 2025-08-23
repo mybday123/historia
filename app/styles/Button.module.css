@@ -8,6 +8,7 @@
     border: none;
     border-radius: 999px;
     padding: 6px 20px;
+    max-height: 48px;
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
