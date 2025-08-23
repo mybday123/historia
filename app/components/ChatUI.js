@@ -5,10 +5,20 @@ import UploadUI from "./UploadUI";
 import TextBox from "./TextBox";
 import styles from "../styles/ChatUI.module.css";
 
+const toBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+
 function ChatBubble({ message }) {
   return (
     <div
-      className={`${styles.bubble} ${message.role === "user" ? styles.user : styles.api}`}
+      className={`${styles.bubble} ${
+        message.role === "user" ? styles.user : styles.api
+      }`}
     >
       <div
         className={
@@ -40,7 +50,8 @@ function ChatUI({ initialMessages = [], onChatChange }) {
   }, [chat, onChatChange]);
 
   const handleSend = async () => {
-    if (!text && uploadedFile) return;
+    if (!text.trim() && !uploadedFile) return;
+
     const userMsg = {
       role: "user",
       text,
@@ -48,35 +59,42 @@ function ChatUI({ initialMessages = [], onChatChange }) {
         ? { name: uploadedFile.name, url: URL.createObjectURL(uploadedFile) }
         : null,
     };
+
     setChat((prev) => [...prev, userMsg]);
     setUploading(true);
 
-    const formData = new FormData();
-    if (uploadedFile) formData.append("file", uploadedFile);
-    formData.append("text", text);
-
     try {
-      const res = await fetch("api/dummy-submit", {
+      const res = await fetch("/api/unli", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            ...chat.map((msg) => ({
+              role: msg.role === "api" ? "assistant" : msg.role,
+              content: msg.text,
+            })),
+            { role: "user", content: text },
+          ],
+          imageBase64: uploadedFile ? await toBase64(uploadedFile) : null,
+        }),
       });
+
       const data = await res.json();
       setChat((prev) => [
         ...prev,
         {
-          role: "api",
-          text: data.message || data.error || "No response",
-          file: data.file
-            ? { name: data.file.name, url: userMsg.file?.url }
-            : null,
+          role: "api", // frontend display
+          text: data.reply || data.error || "No response",
+          file: null,
         },
       ]);
     } catch (err) {
       setChat((prev) => [
         ...prev,
-        { role: api, text: "Failed to send", file: null },
+        { role: "api", text: "Failed to send", file: null },
       ]);
     }
+
     setText("");
     setUploadedFile(null);
     setUploading(false);
