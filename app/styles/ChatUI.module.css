@@ -1,0 +1,78 @@
+.chatContainer {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    padding-top: 56px;
+    height: calc(100vh - 56px);
+}
+
+.chatHistory {
+    flex: 1;
+    min-height: 400px;
+    margin-bottom: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding-bottom: 80px;
+}
+.chatHistory > :last-child {
+    margin-bottom: 48px;
+}
+
+.textboxSticky {
+    position: sticky;
+    bottom: 20px;
+    background: transparent;
+    z-index: 2;
+    padding-top: 8px;
+}
+
+.bubble {
+    display: flex;
+    flex-direction: column;
+    word-break: break-word;
+    border-radius: 16px;
+    margin: 16px 0;
+}
+
+.user {
+    align-items: flex-end;
+}
+
+.api {
+    align-items: flex-start;
+}
+
+.userBubble {
+    max-width: 450px;
+    border-radius: 14px;
+    border: 1px solid #d6c7b7;
+    background: #2a2622;
+    color: #d6c7b7;
+    overflow: hidden;
+}
+
+.apiBubble {
+    max-width: 450px;
+    border-radius: 12px;
+    background: #d6c7b7;
+    color: #2a2622;
+    overflow: hidden;
+}
+
+.bubbleImage {
+    width: 100%;
+    max-height: 200px;
+    display: block;
+    object-fit: cover;
+    padding: 0px;
+    border-bottom: #d6c7b7 1px solid;
+}
+
+.bubbleText {
+    padding: 6px 12px;
+}

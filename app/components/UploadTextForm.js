@@ -3,30 +3,21 @@
 import { useState } from "react";
 import UploadUI from "./UploadUI";
 import TextBox from "./TextBox";
-import Button from "./Button";
 
-function UploadTextForm() {
+function UploadTextForm({ onFirstSubmit }) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [text, setText] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [response, setResponse] = useState("");
-
-  const handleFileUploaded = (file) => {
-    setUploadedFile(file);
-    setResponse("");
-  };
 
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
 
   const handleSend = async () => {
-    if (!uploadedFile) {
-      return;
-    }
+    if (!uploadedFile && !text) return;
     setUploading(true);
     const formData = new FormData();
-    formData.append("file", uploadedFile);
+    if (uploadedFile) formData.append("file", uploadedFile);
     formData.append("text", text);
 
     try {
@@ -35,8 +26,26 @@ function UploadTextForm() {
         body: formData,
       });
       const data = await res.json();
-      setResponse(data);
-      console.log(data);
+      onFirstSubmit({
+        user: {
+          text,
+          file: uploadedFile
+            ? {
+                name: uploadedFile.name,
+                url: URL.createObjectURL(uploadedFile),
+              }
+            : null,
+        },
+        api: {
+          text: data.message || data.error || "No response",
+          file: data.file
+            ? {
+                name: data.file.name,
+                url: uploadedFile ? URL.createObjectURL(uploadedFile) : null,
+              }
+            : null,
+        },
+      });
     } catch (err) {
       setResponse({ error: "Failed to send" });
     }
@@ -45,12 +54,7 @@ function UploadTextForm() {
 
   return (
     <>
-      <UploadUI
-        onFileUploaded={(fileObj) => {
-          setUploadedFile(fileObj);
-          setResponse(null);
-        }}
-      />
+      <UploadUI onFileUploaded={setUploadedFile} />
       {uploadedFile && (
         <TextBox
           value={text}
