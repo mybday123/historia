@@ -135,7 +135,7 @@ function UploadUI({ onFileUploaded }) {
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept="image/png image/jpg image/jpeg"
+        accept="image/png, image/jpg, image/jpeg"
         style={{ display: "none" }}
         disabled={uploading}
       />

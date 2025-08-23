@@ -13,19 +13,41 @@ function UploadTextForm({ onFirstSubmit }) {
     setText(e.target.value);
   };
 
+  // helper convert file ke base64
+  const fileToBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
   const handleSend = async () => {
     if (!uploadedFile && !text) return;
     setUploading(true);
-    const formData = new FormData();
-    if (uploadedFile) formData.append("file", uploadedFile);
-    formData.append("text", text);
 
     try {
-      const res = await fetch("/api/dummy-submit", {
+      let imageBase64 = null;
+      if (uploadedFile) {
+        imageBase64 = await fileToBase64(uploadedFile);
+      }
+
+      const res = await fetch("/api/unli", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "user",
+              content: text || "Tolong analisis gambar ini.",
+            },
+          ],
+          imageBase64,
+        }),
       });
+
       const data = await res.json();
+
       onFirstSubmit({
         user: {
           text,
@@ -37,25 +59,25 @@ function UploadTextForm({ onFirstSubmit }) {
             : null,
         },
         api: {
-          text: data.message || data.error || "No response",
-          file: data.file
-            ? {
-                name: data.file.name,
-                url: uploadedFile ? URL.createObjectURL(uploadedFile) : null,
-              }
-            : null,
+          text: data.reply || data.error || "No response",
+          file: null, // API kamu ga return file, jadi null aja
         },
       });
     } catch (err) {
-      setResponse({ error: "Failed to send" });
+      console.error("UploadTextForm error:", err);
+      onFirstSubmit({
+        user: { text, file: uploadedFile },
+        api: { text: "Failed to send", file: null },
+      });
     }
+
     setUploading(false);
   };
 
   return (
     <>
       <UploadUI onFileUploaded={setUploadedFile} />
-      {uploadedFile && (
+      {(uploadedFile || text) && (
         <TextBox
           value={text}
           onChange={handleTextChange}
