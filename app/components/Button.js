@@ -5,7 +5,7 @@ function Button({ children, icon, onClick, ...props }) {
   return (
     <button className={styles.button} onClick={onClick}>
       {icon && <span className={"material-symbols-outlined"}>{icon}</span>}
-      <span>{children}</span>
+      {children && <span>{children}</span>}
     </button>
   );
 }
