@@ -1,0 +1,25 @@
+.textboxcontainer {
+    display: flex;
+    gap: 10px;
+    width: stretch;
+    max-width: 800px;
+}
+
+.textbox {
+    font-size: 16px;
+    background-color: #2a2622;
+    color: #d6c7b7;
+    border-color: #d6c7b7;
+    opacity: 100%;
+    border-radius: 9999px;
+    border: 2px solid;
+    padding: 12px 24px;
+    width: 100%;
+    max-width: 735px;
+}
+
+.textbox:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: #e6c894;
+}
