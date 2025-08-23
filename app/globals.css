@@ -7,6 +7,7 @@ body {
     min-height: 100vh;
     margin: 0px;
     gap: 16px;
+    overflow: hidden;
 }
 h1 {
     font-size: 48px;
