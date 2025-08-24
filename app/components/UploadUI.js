@@ -106,7 +106,7 @@ function UploadUI({ onFileUploaded }) {
         ) : (
           <p className={styles.p}>Something went wrong</p>
         )}
-        <Button onClick={handleBrowseClick} disable={uploading}>
+        <Button onClick={handleBrowseClick} disable={uploading} alwaysShowText>
           {uploading ? "Uploading..." : "Browse..."}
         </Button>
         <input
@@ -128,7 +128,7 @@ function UploadUI({ onFileUploaded }) {
       onDrop={handleDrop}
     >
       <Icon name={"upload"} color={"#D6C7B7"} size={64} weight="800"></Icon>
-      <Button onClick={handleBrowseClick} disable={uploading}>
+      <Button onClick={handleBrowseClick} disable={uploading} alwaysShowText>
         {uploading ? "Uploading..." : "Browse..."}
       </Button>
       <input

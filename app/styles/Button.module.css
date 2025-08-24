@@ -15,3 +15,17 @@
     outline: none;
     transition: background 0.2s;
 }
+
+@media (max-width: 600px) {
+    .button {
+        padding: 6px 10px;
+        font-size: 14px;
+        max-height: 40px;
+    }
+    .buttonText.alwaysShowText {
+        display: inline !important;
+    }
+    .buttonText {
+        display: none;
+    }
+}
