@@ -8,7 +8,8 @@ const inter = Inter({
 
 export const metadata = {
   title: "Historia",
-  description: "Another AI Agent",
+  description:
+    "Historia is a chatbot designed to help users identify and learn about old and historical images. By analyzing visual details and providing context, it offers quick insights into the origins, significance, and background of photographs, artifacts, and historical scenes.",
 };
 
 export default function RootLayout({ children }) {
