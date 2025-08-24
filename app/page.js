@@ -14,6 +14,7 @@ export default function Home() {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("Your Historia Conversation");
   const [message, setMessage] = useState("");
+  const [chatKey, setChatKey] = useState(0);
 
   const sendEmail = async (email, messages) => {
     try {
@@ -75,11 +76,13 @@ export default function Home() {
     setInitialMessages(messages);
     setChatMessages(messages);
     setShowChat(true);
+    setChatKey((k) => k + 1);
   };
   const handleNewChat = () => {
     setShowChat(false);
     setInitialMessages([]);
     setChatMessages([]);
+    setChatKey((k) => k + 1);
   };
 
   return (
@@ -97,12 +100,12 @@ export default function Home() {
             chatMessages={chatMessages}
           />
           <ChatUI
+            key={chatKey}
             initialMessages={initialMessages}
             onChatChange={setChatMessages}
           />
         </>
       )}
-      {message && <p>{message}</p>}
     </>
   );
 }

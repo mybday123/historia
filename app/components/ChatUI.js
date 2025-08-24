@@ -15,6 +15,20 @@ const toBase64 = (file) =>
   });
 
 function ChatBubble({ message }) {
+  if (message.role === "waiting") {
+    return (
+      <div className={`${styles.bubble} ${styles.api}`}>
+        <div className={styles.apiBubble}>
+          <div
+            className={styles.bubbleText}
+            style={{ fontStyle: "italic", opacity: 0.7 }}
+          >
+            {message.text}
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div
       className={`${styles.bubble} ${
@@ -63,7 +77,11 @@ function ChatUI({ initialMessages = [], onChatChange }) {
         : null,
     };
 
-    setChat((prev) => [...prev, userMsg]);
+    setChat((prev) => [
+      ...prev,
+      userMsg,
+      { role: "waiting", text: "Waiting for response...", file: null },
+    ]);
     setUploading(true);
 
     try {
@@ -83,19 +101,34 @@ function ChatUI({ initialMessages = [], onChatChange }) {
       });
 
       const data = await res.json();
-      setChat((prev) => [
-        ...prev,
-        {
-          role: "api", // disimpan sebagai api (display)
-          text: data.reply || data.error || "No response",
-          file: null,
-        },
-      ]);
+      setChat((prev) => {
+        const waitingIndex = prev.findIndex(
+          (msg, idx) => msg.role === "waiting" && idx === prev.length - 1,
+        );
+        let newChat =
+          waitingIndex !== -1
+            ? [...prev.slice(0, waitingIndex), ...prev.slice(waitingIndex + 1)]
+            : [...prev];
+        return [
+          ...newChat,
+          {
+            role: "api",
+            text: data.reply || data.error || "No response",
+            file: null,
+          },
+        ];
+      });
     } catch (err) {
-      setChat((prev) => [
-        ...prev,
-        { role: "api", text: "Failed to send", file: null },
-      ]);
+      setChat((prev) => {
+        let newChat = [...prev];
+        if (newChat.length && newChat[newChat.length - 1].role === "waiting") {
+          newChat = newChat.slice(0, -1);
+        }
+        return [
+          ...newChat,
+          { role: "api", text: "Failed to send", file: null },
+        ];
+      });
     }
 
     setText("");

@@ -8,6 +8,8 @@ function UploadTextForm({ onFirstSubmit }) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [text, setText] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [waiting, setWaiting] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   const handleTextChange = (e) => {
     setText(e.target.value);
@@ -25,6 +27,26 @@ function UploadTextForm({ onFirstSubmit }) {
   const handleSend = async () => {
     if (!uploadedFile && !text) return;
     setUploading(true);
+    setWaiting(true);
+
+    const userMsg = {
+      role: "user",
+      text,
+      file: uploadedFile
+        ? {
+            name: uploadedFile.name,
+            url: URL.createObjectURL(uploadedFile),
+          }
+        : null,
+    };
+    const waitingMsg = {
+      role: "waiting",
+      text: "Waiting for response...",
+      file: null,
+    };
+    const initialMsgs = [userMsg, waitingMsg];
+    setMessages(initialMsgs);
+    onFirstSubmit({ user: userMsg, api: waitingMsg });
 
     try {
       let imageBase64 = null;
@@ -48,30 +70,23 @@ function UploadTextForm({ onFirstSubmit }) {
 
       const data = await res.json();
 
-      onFirstSubmit({
-        user: {
-          text,
-          file: uploadedFile
-            ? {
-                name: uploadedFile.name,
-                url: URL.createObjectURL(uploadedFile),
-              }
-            : null,
-        },
-        api: {
-          text: data.reply || data.error || "No response",
-          file: null, // API kamu ga return file, jadi null aja
-        },
-      });
+      const apiMsg = {
+        role: "api",
+        text: data.reply || data.error || "No response",
+        file: null,
+      };
+      const finalMsgs = [userMsg, apiMsg];
+      setMessages(finalMsgs);
+      onFirstSubmit({ user: userMsg, api: apiMsg });
     } catch (err) {
       console.error("UploadTextForm error:", err);
-      onFirstSubmit({
-        user: { text, file: uploadedFile },
-        api: { text: "Failed to send", file: null },
-      });
+      const apiMsg = { role: "api", text: "Failed to send", file: null };
+      setMessages([userMsg, apiMsg]);
+      onFirstSubmit({ user: userMsg, api: apiMsg });
     }
 
     setUploading(false);
+    setWaiting(false);
   };
 
   return (
