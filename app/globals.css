@@ -19,3 +19,12 @@ p {
     font-size: 16px;
     color: #d6c7b7;
 }
+
+@media (max-width: 600px) {
+    h1 {
+        font-size: 32px;
+    }
+    p {
+        font-size: 14px;
+    }
+}

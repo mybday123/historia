@@ -2,14 +2,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 10px;
     margin: 0px;
     border-style: dashed;
     border-color: #e6c89480;
-    border-radius: 11px;
-    padding: 43px 175px;
-    width: auto;
-    max-width: 175px;
+    border-radius: 16px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 450px;
+    box-sizing: border-box;
 }
 
 .p {
@@ -24,20 +25,27 @@
 .uploadedcontainer {
     position: relative;
     background: #23201c;
-    width: fit-content;
+    width: 100%;
+    max-width: 400px;
     border: 2px solid;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     border-color: #d6c7b7;
-    border-radius: 14px;
+    border-radius: 18px;
     overflow: hidden;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .uploadedimage {
-    width: 500px;
-    height: 250px;
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    aspect-ratio: 4/2;
     object-fit: cover;
+    border-radius: 16px 16px 0 0;
+    display: block;
 }
 
 .filenamebox {
@@ -71,4 +79,27 @@
     justify-content: center;
     z-index: 2;
     transition: background 0.2s;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 18px 4vw;
+        max-width: 98vw;
+        min-width: 0;
+        border-radius: 14px;
+    }
+    .uploadedcontainer {
+        max-width: 98vw;
+        border-radius: 14px;
+    }
+    .uploadedimage {
+        width: 100%;
+        max-width: 98vw;
+        height: auto;
+        aspect-ratio: 4/2;
+        border-radius: 12px 12px 0 0;
+    }
+    .filenamebox {
+        padding: 8px 4px;
+    }
 }
