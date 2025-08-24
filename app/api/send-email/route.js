@@ -1,39 +1,52 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
-  const { to, subject, htmlBody } = req.body;
-  if (!to || !subject || !htmlBody) {
-    return res.status(400).json({ message: 'Input tidak lengkap' });
-  }
-
-  const payload = {
-    from: { email: 'tim@arsipsuarakemerdekaan.id', name: 'Arsip Suara Kemerdekaan' },
-    to: [{ email: to }],
-    subject: subject,
-    html: htmlBody,
-  };
-
+export async function POST(req) {
   try {
-    const mailryResponse = await fetch('https://api.mailry.co/v1/send', {
-      method: 'POST',
+    const { to, subject, htmlBody } = await req.json();
+
+    if (!to || !subject || !htmlBody) {
+      return new Response(
+        JSON.stringify({ message: "Input tidak lengkap" }),
+        { status: 400 }
+      );
+    }
+
+    const payload = {
+      emailId: process.env.MAILRY_EMAIL_UUID,
+      to,
+      subject,
+      htmlBody,
+    };
+
+    const mailryResponse = await fetch("https://api.mailry.co/ext/inbox/send", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${process.env.MLRY_API_KEY}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.MAILRY_API_KEY}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
 
+    const data = await mailryResponse.json();
+    console.log("Response dari Mailry:", data);
+
     if (!mailryResponse.ok) {
-      const errorData = await mailryResponse.json();
-      return res.status(500).json({ message: errorData.message || 'Gagal mengirim email.' });
+      return new Response(
+        JSON.stringify({
+          message: data.message || "Gagal mengirim email",
+          error: data,
+        }),
+        { status: mailryResponse.status }
+      );
     }
 
-    const responseData = await mailryResponse.json();
-    return res.status(200).json({ message: 'Email berhasil dikirim!', data: responseData });
+    return new Response(
+      JSON.stringify({ message: "Email berhasil dikirim!", data }),
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error pada /api/send-email:', error);
-    return res.status(500).json({ message: 'Gagal mengirim email.', error: error.message });
+    console.error("Error pada /api/send-email:", error);
+    return new Response(
+      JSON.stringify({ message: "Gagal mengirim email", error: error.message }),
+      { status: 500 }
+    );
   }
 }
