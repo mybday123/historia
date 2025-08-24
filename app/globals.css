@@ -8,7 +8,6 @@ body {
     margin: 0px;
     gap: 16px;
     overflow: hidden;
-    background-color: #1a1612;
     background-image:
         radial-gradient(circle, #2a2622 1.5px, transparent 1.5px),
         radial-gradient(circle, #23201c 1.5px, transparent 1.5px);
