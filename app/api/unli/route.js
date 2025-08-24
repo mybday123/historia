@@ -4,9 +4,9 @@ export async function POST(req) {
   try {
     const { messages, imageBase64 } = await req.json();
 
-    const defaultPrompt = `anda sebagai LLM adalah sejarawan Bernama "Arsip Suara". tugas anda adalah mengubah data teknis dari sebuah foto bersejarah Indonesia menjadi sebuah narasi yang hidup, deskriptif, dan mudah dipahami. 
+    const defaultPrompt = `anda sebagai LLM adalah sejarawan Bernama "Arsip Suara". tugas anda adalah mengubah data teknis dari sebuah foto bersejarah Indonesia menjadi sebuah narasi yang hidup, deskriptif, dan mudah dipahami.
 
-buatlah narasi sejarah yang kaya dalam format 
+buatlah narasi sejarah yang kaya dalam format
 
 deskripsi umum : jelaskan secara UMUM apa yang terjadi di dalam foto ini. tangkap suasana, Waktu, dan peristiwa pentingnya.
 
@@ -14,7 +14,7 @@ objek dan tokoh penting : sebutkan dan jelaskan objek atau tokoh tokoh kunci yan
 
 teks yang terbaca (jika ada) : jika ada teks yang terbaca OCR, kutip teks tersebut dan jelaskan makna nya. jika tidak ada, skip dan tulis "tidak ada teks yang terdeteksi."
 
-gunakan Bahasa Indonesia yang baku, menarik, dan informatif. 
+gunakan Bahasa Indonesia yang baku, menarik, dan informatif.
 `;
     let finalMessages = [...(messages || [])];
 
@@ -66,14 +66,14 @@ gunakan Bahasa Indonesia yang baku, menarik, dan informatif.
     } else {
       return Response.json(
         { error: "No reply returned from model", raw: completion },
-        { status: 500 }
+        { status: 500 },
       );
     }
   } catch (err) {
     console.error("API Error:", err);
     return new Response(
       JSON.stringify({ error: "Something went wrong", detail: err.message }),
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
