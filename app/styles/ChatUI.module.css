@@ -75,4 +75,5 @@
 
 .bubbleText {
     padding: 6px 12px;
+    white-space: pre-line;
 }

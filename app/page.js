@@ -5,6 +5,7 @@ import UploadTextForm from "./components/UploadTextForm";
 import ChatUI from "./components/ChatUI";
 import TopBar from "./components/TopBar";
 import React from "react";
+import stripMarkdown from "@/lib/stripMarkdown";
 
 export default function Home() {
   const [showChat, setShowChat] = useState(false);
@@ -22,19 +23,23 @@ export default function Home() {
             <h2>Historia Conversation</h2>
             <ul>
               ${messages
-                .map(
-                  (msg) => `
+                .map((msg) => {
+                  const plainText = stripMarkdown(msg.text || "").replace(
+                    /\n/g,
+                    "<br />",
+                  );
+                  return `
                     <li>
                       <b>${msg.role === "user" ? "You" : "Historia"}:</b>
-                      ${msg.text ? `<div>${msg.text}</div>` : ""}
+                      ${plainText ? `<div>${plainText}</div>` : ""}
                       ${
                         msg.file
                           ? `<div><img src="${msg.file.url}" alt="${msg.file.name}" style="max-width:200px;"/></div>`
                           : ""
                       }
                     </li>
-                  `,
-                )
+                  `;
+                })
                 .join("")}
             </ul>
           </body>

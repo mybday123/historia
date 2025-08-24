@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import UploadUI from "./UploadUI";
 import TextBox from "./TextBox";
 import styles from "../styles/ChatUI.module.css";
+import stripMarkdown from "@/lib/stripMarkdown";
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -33,7 +34,9 @@ function ChatBubble({ message }) {
             draggable={false}
           />
         )}
-        <div className={styles.bubbleText}>{message.text}</div>
+        {message.text && (
+          <div className={styles.bubbleText}>{stripMarkdown(message.text)}</div>
+        )}
       </div>
     </div>
   );
