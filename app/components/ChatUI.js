@@ -83,7 +83,7 @@ function ChatUI({ initialMessages = [], onChatChange }) {
       setChat((prev) => [
         ...prev,
         {
-          role: "api", // frontend display
+          role: "api", // disimpan sebagai api (display)
           text: data.reply || data.error || "No response",
           file: null,
         },
