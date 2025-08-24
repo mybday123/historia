@@ -10,6 +10,57 @@ export default function Home() {
   const [showChat, setShowChat] = useState(false);
   const [initialMessages, setInitialMessages] = useState([]);
   const [chatMessages, setChatMessages] = useState([]);
+  const [to, setTo] = useState("");
+  const [subject, setSubject] = useState("Your Historia Conversation");
+  const [message, setMessage] = useState("");
+
+  const sendEmail = async (email, messages) => {
+    try {
+      const htmlBody = `
+        <html>
+          <body>
+            <h2>Historia Conversation</h2>
+            <ul>
+              ${messages
+                .map(
+                  (msg) => `
+                    <li>
+                      <b>${msg.role === "user" ? "You" : "Historia"}:</b>
+                      ${msg.text ? `<div>${msg.text}</div>` : ""}
+                      ${
+                        msg.file
+                          ? `<div><img src="${msg.file.url}" alt="${msg.file.name}" style="max-width:200px;"/></div>`
+                          : ""
+                      }
+                    </li>
+                  `,
+                )
+                .join("")}
+            </ul>
+          </body>
+        </html>
+      `;
+
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ to: email, subject, htmlBody }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to send email.");
+      }
+
+      const data = await response.json();
+      setMessage("Email sent successfully!");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      setMessage(error.message || "An error occurred while sending the email.");
+    }
+  };
 
   const handleFirstSubmit = ({ user, api }) => {
     const messages = [
@@ -26,38 +77,6 @@ export default function Home() {
     setChatMessages([]);
   };
 
-  // This will be called by TopBar
-  const handleSendEmail = (email, messages) => {
-    // Convert messages to HTML
-    const html = `
-      <html>
-        <body>
-          <h2>Historia Conversation</h2>
-          <ul>
-            ${messages
-              .map(
-                (msg) => `
-                  <li>
-                    <b>${msg.role === "user" ? "You" : "Historia"}:</b>
-                    ${msg.text ? `<div>${msg.text}</div>` : ""}
-                    ${
-                      msg.file
-                        ? `<div><img src="${msg.file.url}" alt="${msg.file.name}" style="max-width:200px;"/></div>`
-                        : ""
-                    }
-                  </li>
-                `,
-              )
-              .join("")}
-          </ul>
-        </body>
-      </html>
-    `;
-    // For now, just log it
-    console.log("Email to:", email);
-    console.log(html);
-  };
-
   return (
     <>
       {!showChat ? (
@@ -69,7 +88,7 @@ export default function Home() {
         <>
           <TopBar
             onNewChat={handleNewChat}
-            onSendEmail={handleSendEmail}
+            onSendEmail={(email) => sendEmail(email, chatMessages)}
             chatMessages={chatMessages}
           />
           <ChatUI
@@ -78,6 +97,7 @@ export default function Home() {
           />
         </>
       )}
+      {message && <p>{message}</p>}
     </>
   );
 }
